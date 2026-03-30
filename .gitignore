@@ -28,7 +28,8 @@ Reporte_Modelo_prod.xlsx
 Reporte_Modelo_dev.xlsx
 Estadisticos_Modelo.xlsx
 inventario_a_rotar.xlsx
-
+Analisis_Impacto_Compraventero.xlsx
+Impacto compraventero.xlsx
 
 # Credenciales
 bigqery.json
@@ -38,6 +39,7 @@ bigqery.json
 TABLAS DOSR TARIFAS.xlsx
 costos_agrupados.xlsx
 estadisticos_ventas_v2.xlsx
+
 EOF
 
 consulta_placas_render/
