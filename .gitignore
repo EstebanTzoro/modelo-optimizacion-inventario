@@ -1,0 +1,43 @@
+cat > .gitignore << 'EOF'
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Mac
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Excel de salida / reportes
+Reporte_Modelo_prod.xlsx
+Reporte_Modelo_dev.xlsx
+Estadisticos_Modelo.xlsx
+inventario_a_rotar.xlsx
+
+
+# Credenciales
+bigqery.json
+*.json
+
+# Datos pesados o sensibles
+TABLAS DOSR TARIFAS.xlsx
+costos_agrupados.xlsx
+estadisticos_ventas_v2.xlsx
+EOF
+
+consulta_placas_render/
