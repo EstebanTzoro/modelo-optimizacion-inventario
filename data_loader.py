@@ -122,7 +122,7 @@ def construir_df_final(df_inventario, df_lineas):
     df_final["PrecioVenta"] = np.select(
         [
             df_final["Canal"] == "Venta Directa",
-            df_final["Canal"] == "Desensamble",
+            df_final["Canal"] == "MotosDesensamble",
             (df_final["Canal"] == "Compraventero") &
             (df_final["FechaLegalizacion"] < FECHA_CORTE),
             (df_final["Canal"] == "Compraventero") &

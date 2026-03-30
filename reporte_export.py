@@ -292,6 +292,18 @@ def formatear_excel_profesional(
     output_file: str = "Reporte_Modelo_Formateado.xlsx"
 ):
 
+    columnas_tecnicas_ocultar = [
+        "Nivel_Dias",
+        "Nivel_Precio_Destino",
+        "Nivel_Traslado",
+        "Bandera_Poca_Data_Destino",
+        "N_Exacto_Destino",
+        "N_Referencia",
+        "N_Marca_Ciudad"
+    ]
+
+    hojas_cliente = ["Escenarios", "Escenarios_Estimado", "Traslados"]
+
     excel_file = pd.ExcelFile(input_file)
 
     with pd.ExcelWriter(output_file, engine="xlsxwriter") as writer:
@@ -329,6 +341,21 @@ def formatear_excel_profesional(
             ws.add_table(table)
 
         # =========================
+        # OCULTAR COLUMNAS TÉCNICAS SOLO EN ARCHIVO PROD
+        # =========================
+        if sheet_name in hojas_cliente:
+            headers = {}
+            for col in range(1, max_col + 1):
+                header = ws.cell(row=1, column=col).value
+                headers[header] = col
+
+            for col_name in columnas_tecnicas_ocultar:
+                if col_name in headers:
+                    col_idx = headers[col_name]
+                    col_letter = ws.cell(row=1, column=col_idx).column_letter
+                    ws.column_dimensions[col_letter].hidden = True
+
+        # =========================
         # ANCHO COLUMNAS
         # =========================
         for col in ws.columns:
@@ -337,7 +364,7 @@ def formatear_excel_profesional(
 
             for cell in col:
                 try:
-                    if cell.value:
+                    if cell.value is not None:
                         max_length = max(max_length, len(str(cell.value)))
                 except:
                     pass
@@ -371,7 +398,10 @@ def formatear_excel_profesional(
                     "Rank",
                     "Rank_Global",
                     "Dias_Esperados_Origen",
-                    "Dias_Esperados_Destino"
+                    "Dias_Esperados_Destino",
+                    "N_Exacto_Destino",
+                    "N_Referencia",
+                    "N_Marca_Ciudad"
                 ]:
                     cell.alignment = Alignment(horizontal="center")
 

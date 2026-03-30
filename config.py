@@ -87,6 +87,14 @@ COL_CIUDAD_CUSTODIA = "ciudad_homologada"
 COL_COSTO_CUSTODIA = "Custodia/Día"
 
 # =====================================================
+# PARÁMETROS DE ROBUSTEZ / FALLBACKS
+# =====================================================
+
+MIN_MUESTRA_EXACTA = 5
+MIN_MUESTRA_REFERENCIA = 5
+MIN_MUESTRA_MARCA = 5
+
+# =====================================================
 # PARÁMETROS FINANCIEROS
 # =====================================================
 

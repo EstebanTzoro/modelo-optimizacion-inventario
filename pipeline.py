@@ -12,10 +12,6 @@ from reporte_export import exportar_dual_v4, formatear_excel_profesional
 
 def run_pipeline(export_path=OUTPUT_ESTADISTICOS) -> dict:
 
-    # =====================================================
-    # ESTADÍSTICOS
-    # =====================================================
-
     print("1️⃣ Cargando tablas base...")
     df_inv, df_lin, df_acc = load_tablas_base()
 
@@ -50,6 +46,7 @@ def run_pipeline(export_path=OUTPUT_ESTADISTICOS) -> dict:
         ["LINEA_RUNT"],
         total_ventas
     ).round(3)
+
     tabla_marca = tabla_estadisticos(
         df_ventas,
         ["MARCA_RUNT"],
@@ -62,10 +59,21 @@ def run_pipeline(export_path=OUTPUT_ESTADISTICOS) -> dict:
         total_ventas
     ).round(3)
 
+    # Enriquecer tabla_referencia_ciudad con marca para soportar fallback robusto
+    mapa_ref_marca = (
+        df_ventas[["LINEA_RUNT", "MARCA_RUNT"]]
+        .dropna()
+        .drop_duplicates()
+    )
+
+    tabla_referencia_ciudad = tabla_referencia_ciudad.merge(
+        mapa_ref_marca,
+        on="LINEA_RUNT",
+        how="left"
+    )
+
     analisis_score = construir_analisis_score(tabla_referencia_ciudad).round(3)
-    # =========================
-    # Exportar estadísticos
-    # =========================
+
     with pd.ExcelWriter(export_path, engine="xlsxwriter") as writer:
         tabla_marca.to_excel(writer, sheet_name="Marca", index=False)
         tabla_marca_ciudad.to_excel(writer, sheet_name="Marca_Ciudad", index=False)
@@ -74,10 +82,6 @@ def run_pipeline(export_path=OUTPUT_ESTADISTICOS) -> dict:
         analisis_score.to_excel(writer, sheet_name="Analisis_Ingreso_por_dia", index=False)
 
     print("✅ Estadísticos exportados.")
-
-    # =====================================================
-    # 2️⃣ INVENTARIO A ROTAR
-    # =====================================================
 
     print("8️⃣ Construyendo inventario a rotar...")
 
@@ -111,20 +115,17 @@ def run_pipeline(export_path=OUTPUT_ESTADISTICOS) -> dict:
 
     print("INVENTARIO_A_ROTAR shape:", df_inventario_rotar_final.shape)
 
-    # Placas que van a entrar al juego de la optimizacion
     df_inventario_rotar_final.to_excel(
         "inventario_a_rotar.xlsx",
         index=False
     )
-    df_inventario_rotar_final["UbicacionActual"] = (
-    df_inventario_rotar_final["UbicacionActual"]
-        .apply(homologar_ciudad)
-)
-    print("✅ Inventario a rotar exportado.")
 
-    # =====================================================
-    # MODELO LOGÍSTICO
-    # =====================================================
+    df_inventario_rotar_final["UbicacionActual"] = (
+        df_inventario_rotar_final["UbicacionActual"]
+        .apply(homologar_ciudad)
+    )
+
+    print("✅ Inventario a rotar exportado.")
 
     print("9️⃣ Cargando costos para modelo...")
 
@@ -141,10 +142,6 @@ def run_pipeline(export_path=OUTPUT_ESTADISTICOS) -> dict:
         top_n=999,
         filename=OUTPUT_MODELO
     )
-
-    # =====================================================
-    # FORMATO LINDO
-    # =====================================================
 
     print("1️⃣1️⃣ Formateando Excel final...")
 

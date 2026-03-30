@@ -152,27 +152,23 @@ def limpiar_base(df: pd.DataFrame) -> pd.DataFrame:
 # -----------------------------
 # Ventas (con días)
 # -----------------------------
-def obtener_ventas(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Ventas: FechaLegalizacion y FechaDisponible no nulas.
-    Replica exactamente la lógica del notebook.
-    """
+def obtener_ventas(
+    df: pd.DataFrame,
+    excluir_canales: list[str] | None = None
+) -> pd.DataFrame:
+    if excluir_canales is None:
+        excluir_canales = ["MotosDesensamble"]
 
     df_ventas = df[
         df["FechaLegalizacion"].notna() &
-        df["FechaDisponible"].notna()&
-        (df["Canal"] != "MotosDesensamble")
+        df["FechaDisponible"].notna() &
+        (~df["Canal"].isin(excluir_canales))
     ].copy()
 
-    # Diferencia absoluta en días
     df_ventas["dias_diff"] = (
         df_ventas["FechaLegalizacion"] -
         df_ventas["FechaDisponible"]
     ).dt.days.abs()
-
-    # =========================
-    # HOMOLOGACIÓN CIUDAD (igual notebook)
-    # =========================
 
     df_ventas["Ciudad_Asesor"] = df_ventas["Ciudad_Asesor"].fillna("SinSeleccionar")
 
