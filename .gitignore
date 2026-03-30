@@ -29,7 +29,8 @@ Reporte_Modelo_dev.xlsx
 Estadisticos_Modelo.xlsx
 inventario_a_rotar.xlsx
 Analisis_Impacto_Compraventero.xlsx
-Impacto compraventero.xlsx
+Impacto compr*.xlsx
+~$*.xlsxaventero.xlsx
 
 # Credenciales
 bigqery.json
